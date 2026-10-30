@@ -1,26 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ClassForm } from "@/components/class-form";
-import { ClassResult } from "@/components/class-result";
-import { buildClass, choicesQuery, parseChoices } from "@/lib/class-builder";
+import { ClassBuilder } from "@/components/class-builder";
 import { getClassCatalog } from "@/lib/glossary";
 
 export const metadata: Metadata = { title: "Build my class" };
 
-/** The choices and the class they build both live in the URL, so a class can be bookmarked or shared. */
-async function ClassBuilder({ searchParams }: { searchParams: PageProps<"/class">["searchParams"] }) {
-  const choices = parseChoices(await searchParams);
+export default async function ClassPage() {
   const catalog = await getClassCatalog();
-  return (
-    <>
-      <ClassForm key={choices ? JSON.stringify(choices) : "new"} catalog={catalog.map((s) => ({ ...s, pose: null, phases: [] }))} initial={choices} />
-      {/* A new class (not a swap) mounts afresh, so it plays its entrance again. */}
-      {choices && <ClassResult key={choicesQuery({ ...choices, alts: {} })} sections={buildClass(catalog, choices)} choices={choices} />}
-    </>
-  );
-}
-
-export default function ClassPage(props: PageProps<"/class">) {
   return (
     <main className="relative z-10 mx-auto max-w-5xl space-y-10 px-6 pb-20 md:px-10">
       <header>
@@ -30,7 +16,7 @@ export default function ClassPage(props: PageProps<"/class">) {
         </p>
       </header>
       <Suspense fallback={<div className="glass h-96 animate-pulse" />}>
-        <ClassBuilder searchParams={props.searchParams} />
+        <ClassBuilder catalog={catalog} />
       </Suspense>
     </main>
   );

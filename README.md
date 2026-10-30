@@ -44,6 +44,18 @@ The image bundles the seeded glossary database, so data written at runtime is lo
 is replaced. CI pushes the image for every commit on `main` to the workspace's private registry,
 `nscr.io/<workspace-id>/tendu`, tagged with the commit SHA and `latest`.
 
+## GitHub Pages
+
+`.github/workflows/pages.yml` publishes `main` as a static site on GitHub Pages (free for public
+repositories) on every push. It builds with `PAGES_BASE_PATH` set, which switches `next.config.ts`
+to a static export in `out/` under the repository's path. Pages has no server, so the glossary is
+frozen at build time and Build my class runs in the browser. To enable it once, set **Settings →
+Pages → Source** to **GitHub Actions**.
+
+```bash
+PAGES_BASE_PATH= npm run build && npx serve out   # preview the static site at the root path
+```
+
 ## Structure
 
 - `src/db/schema.ts` — tables

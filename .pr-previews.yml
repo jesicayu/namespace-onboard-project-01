@@ -1,0 +1,4 @@
+runtime: devbox
+port: 3000
+build: rm -rf data && npm ci && npm run db:setup && npm run build
+start: npm start
